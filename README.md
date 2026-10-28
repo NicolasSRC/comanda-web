@@ -32,31 +32,37 @@ La interfaz está en español y usa **actualización en vivo** para que mesas, p
 
 ---
 
-## Requisitos
+## Cómo ver el proyecto
 
-- Node.js 22 o superior
-- npm 10 o superior
-- La API de Comanda disponible (por defecto en `http://localhost:3000`)
+Requisitos: Node.js 22+, npm 10+ y, para la vía recomendada, Docker Desktop con Docker Compose.
 
-Para levantar la API:
+### 1. Levantar la API
 
 ```bash
 git clone https://github.com/NicolasSRC/comanda-api.git
 cd comanda-api
-npm install
 cp .env.example .env
-docker compose up --build
-# o, sin Docker:
-# npx prisma migrate dev && npm run db:seed && npm run start:dev
+docker compose up -d --build
 ```
 
-La API aplica migraciones y carga el restaurante demo (`demo`) con usuarios de prueba.
-
----
-
-## Inicio rápido
+Comprueba que responde:
 
 ```bash
+curl http://localhost:3000/health
+# {"status":"ok","database":"up",...}
+```
+
+- Swagger: <http://localhost:3000/docs>
+- Carta demo: <http://localhost:3000/publico/demo/carta>
+- El seed carga el restaurante `demo` y los usuarios de prueba.
+
+Si la API ya está corriendo, pasa directamente al paso 2.
+
+### 2. Levantar el frontend
+
+```bash
+git clone https://github.com/NicolasSRC/comanda-web.git
+cd comanda-web
 npm install
 cp .env.example .env
 npm run dev
@@ -65,6 +71,36 @@ npm run dev
 Abre <http://localhost:5173>.
 
 En desarrollo, Vite redirige `/api/*` a `http://localhost:3000` y elimina el prefijo, de modo que no hace falta configurar CORS ni una URL absoluta.
+
+### 3. Recorrer la aplicación
+
+| Qué ver | URL | Credenciales |
+| ------- | --- | ------------ |
+| Carta pública | <http://localhost:5173/> o <http://localhost:5173/demo> | Sin sesión |
+| Login | <http://localhost:5173/login> | Ver tabla de usuarios demo |
+| Mesas y pedidos | <http://localhost:5173/app/mesas> | `admin@demo.com` / `Admin123!` o `mesero@demo.com` / `Mesero123!` |
+| Cocina y barra | <http://localhost:5173/app/cocina> | `cocina@demo.com` / `Cocina123!` |
+| Caja | <http://localhost:5173/app/caja> | `cajero@demo.com` / `Cajero123!` |
+| Reportes | <http://localhost:5173/app/reportes> | `admin@demo.com` / `Admin123!` |
+
+Flujo sugerido para verlo completo:
+
+1. Entra como mesero, abre una mesa y agrega productos.
+2. Entra como cocina en otra pestaña y avanza los ítems.
+3. Vuelve a mesas para ver el estado actualizado en vivo.
+4. Entra como cajero, aplica propina o descuento, registra el pago y cierra la cuenta.
+5. Entra como administrador y revisa reportes.
+
+---
+
+## Requisitos y configuración
+
+- Node.js 22 o superior
+- npm 10 o superior
+- La API de Comanda disponible (por defecto en `http://localhost:3000`)
+
+Para levantar la API paso a paso, consulta la sección anterior o el
+[README de comanda-api](https://github.com/NicolasSRC/comanda-api#cómo-ver-el-proyecto).
 
 ### Variables de entorno
 
