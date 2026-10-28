@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { toast } from 'sonner';
 import { FieldError } from '@/components/shared/feedback';
 import { Button } from '@/components/ui/button';
@@ -147,8 +147,8 @@ export function DiscountDialog({
       motivo: '',
     },
   });
-  const scope = form.watch('alcance');
-  const type = form.watch('tipo');
+  const scope = useWatch({ control: form.control, name: 'alcance' });
+  const type = useWatch({ control: form.control, name: 'tipo' });
 
   useEffect(() => {
     if (open) {
